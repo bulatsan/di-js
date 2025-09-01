@@ -1,4 +1,4 @@
-import { p, setup, Provider } from '@bulatlib/di';
+import { p, setup } from '@bulatlib/di';
 
 const createApi = () => {
   return {

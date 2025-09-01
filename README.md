@@ -1,101 +1,72 @@
-## @bulatlib/di — минималистичный DI
+## @bulatlib/di — tiny DI wrapper
 
-Простой слой над `inversify` для декларативного описания зависимостей. Вы объявляете дерево провайдеров, один раз вызываете `bindAll()`, далее получаете экземпляры через `.get()`.
+Small convenience layer on top of `inversify` to declare providers as a plain object. Call `bindAll()` once, then use `.get()` to access singletons.
 
-### Установка
+### Install
+
+`inversify` is a peer dependency. Supported versions: `>=5 <8`.
 
 ```bash
 npm i @bulatlib/di inversify
-# или
-yarn add @bulatlib/di inversify
-# или
+# or
 pnpm add @bulatlib/di inversify
-# или
+# or
 bun add @bulatlib/di inversify
 ```
 
-### Быстрый старт
+### Quick start
 
 ```ts
 import { p, setup } from '@bulatlib/di';
 
-class Api {
-  ping() {
-    return 'pong';
-  }
-}
+const createApi = () => {
+  return {
+    ping: () => 'pong',
+  };
+};
 
-class Service {
-  constructor(private api: Api) {}
-  run() {
-    return this.api.ping();
-  }
-}
+const createService = (api: { ping: () => string } = di.api.get()) => {
+  return {
+    run: () => api.ping(),
+  };
+};
 
-let di = setup({
-  api: p(() => new Api()),
-  service: p(() => new Service(di.api.get())),
-});
-
-// Привязываем все провайдеры (singleton)
-di.bindAll();
-
-// Используем
-const service = di.service.get();
-console.log(service.run()); // "pong"
-```
-
-### Вложенные модули и ключи
-
-Ключи для `inversify` формируются автоматически из пути в объекте. По умолчанию корень — `di`.
-
-```ts
-let di = setup({
-  services: {
-    api: p(() => new Api()),
-    svc: p(() => new Service(di.services.api.get())),
-  },
-});
-
-di.bindAll();
-// Ключи будут: "di.services.api" и "di.services.svc"
-```
-
-Можно переопределить корневой ключ и отследить процесс биндинга:
-
-```ts
-let di = setup(
-  { api: p(() => new Api()) },
+const di = setup(
   {
-    initialKey: 'app',
-    onBind: (name) => console.log('bind', name),
+    api: p(() => createApi()),
+    service: p(() => createService()),
+  },
+  {
+    onBind: (name) => console.log('binding:', name),
   },
 );
 
 di.bindAll();
-// bind app.api
+// binding: di.service
+// binding: di.api
+
+console.log(di.service.get().run());
+// pong
 ```
 
-### Подмена реализаций (тесты)
+### Override in tests
 
-Для замены реализации не обязательно вызывать `bindAll()`. Можно привязать нужный провайдер вручную, передав альтернативный билдер:
+You can rebind any provider before the first `.get()`:
 
 ```ts
-let di = setup({
-  api: p(() => new Api()),
-});
-
-// Переопределяем до получения экземпляра
+let di = setup({ api: p(() => new Api()) });
 di.api.bind(() => new MockApi());
-
 const api = di.api.get();
 ```
 
 ### API
 
-- `p(() => T)`: создать провайдер типа `T`.
-- `setup(deps, { initialKey = 'di', onBind? })` → возвращает `deps` + метод `bindAll()`.
-- `Provider.bind(builder?)`: привязать провайдер, опционально заменить билдер.
-- `Provider.get()`: получить singleton-экземпляр.
+- `p(() => T)`: create a provider of `T`.
+- `setup(deps, { initialKey = 'di', onBind? })` → returns `deps` plus `bindAll()`.
+- `Provider.bind(builder?)`: bind with optional custom factory.
+- `Provider.get()`: get a singleton instance.
 
-Все провайдеры биндятся в `singleton`-области. Декораторы и `reflect-metadata` не требуются.
+Notes:
+
+- All providers are singletons by default.
+- No decorators or `reflect-metadata` are required.
