@@ -1,0 +1,52 @@
+{
+  "name": "@bulatlib/di",
+  "author": "bulatsan",
+  "version": "0.0.1",
+  "description": "A simple dependency injection container",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bulatsan/di-js.git"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.es.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "di",
+    "dependency",
+    "injection",
+    "container"
+  ],
+  "scripts": {
+    "build": "tsc -b && vite build -c vite.config.ts",
+    "prepare": "bun run build",
+    "pack": "rm -rf pack && mkdir -p pack && npm pack --pack-destination ./pack",
+    "fmt": "prettier --write ."
+  },
+  "devDependencies": {
+    "@tsconfig/strictest": "^2.0.5",
+    "@types/node": "^24.3.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.4",
+    "vite-plugin-dts": "^4.5.4",
+    "inversify": "^7.9.1"
+  },
+  "peerDependencies": {
+    "inversify": ">=5 <8"
+  }
+}

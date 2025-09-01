@@ -1,0 +1,14 @@
+{
+  "name": "@bulatlib/di-examples",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "reinstall-di": "bun rm @bulatlib/di && bun pm cache rm && bun add ../pack/bulatlib-di-0.0.1.tgz",
+    "basic": "bun run ./src/basic.ts",
+    "mock": "bun run ./src/mock.ts"
+  },
+  "dependencies": {
+    "@bulatlib/di": "../pack/bulatlib-di-0.0.1.tgz",
+    "inversify": ">=5 <8"
+  }
+}
