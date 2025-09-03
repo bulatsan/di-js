@@ -1,7 +1,7 @@
 {
   "name": "@bulatlib/di",
   "author": "bulatsan",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple dependency injection container",
   "license": "MIT",
   "private": false,
@@ -36,9 +36,9 @@
     "container"
   ],
   "scripts": {
+    "test": "vitest run",
     "build": "tsc -b && vite build -c vite.config.ts",
-    "prepare": "bun run build",
-    "pack": "rm -rf pack && mkdir -p pack && npm pack --pack-destination ./pack",
+    "pack": "rm -rf pack &&  bun pm cache rm && bun run build && mkdir -p pack && npm pack --pack-destination ./pack",
     "fmt": "prettier --write ."
   },
   "devDependencies": {
@@ -48,9 +48,6 @@
     "typescript": "^5.9.2",
     "vite": "^7.1.4",
     "vite-plugin-dts": "^4.5.4",
-    "inversify": "^7.9.1"
-  },
-  "peerDependencies": {
-    "inversify": ">=5 <8"
+    "vitest": "^3.2.4"
   }
 }

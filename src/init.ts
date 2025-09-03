@@ -1,4 +1,4 @@
-import { Container } from 'inversify';
+import { Container } from './container';
 
 import { Provider } from './provider';
 
@@ -7,17 +7,16 @@ interface Options {
   onBind?: (name: string) => void;
 }
 
-export function setup<T extends object>(
-  deps: T,
+export function init<T extends object>(
+  tree: T,
   { initialKey = 'di', onBind = () => {} }: Options = {},
-): T & { bindAll: () => void } {
+): T {
   const container = new Container();
-  const bindings: Binding[] = [];
 
   const stack: Entry[] = [
     {
       key: initialKey,
-      value: deps,
+      value: tree,
     },
   ];
 
@@ -30,13 +29,8 @@ export function setup<T extends object>(
 
     if (current.value instanceof Provider) {
       const provider = current.value;
-      provider.setup(current.key, container, onBind);
-
-      bindings.push({
-        name: current.key,
-        bind: () => provider.bind(),
-      });
-
+      provider.init(current.key, container, onBind);
+      provider.bind();
       continue;
     }
 
@@ -50,22 +44,10 @@ export function setup<T extends object>(
     }
   }
 
-  return {
-    ...deps,
-    bindAll: () => {
-      for (const binding of bindings) {
-        binding.bind();
-      }
-    },
-  };
+  return tree;
 }
 
 interface Entry {
   key: string;
   value: object;
-}
-
-interface Binding {
-  name: string;
-  bind: () => void;
 }

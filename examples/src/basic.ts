@@ -1,4 +1,4 @@
-import { p, setup } from '@bulatlib/di';
+import { p, init } from '@bulatlib/di';
 
 const createApi = () => {
   return {
@@ -12,7 +12,7 @@ const createService = (api: { ping: () => string } = di.api.get()) => {
   };
 };
 
-const di = setup(
+const di = init(
   {
     api: p(() => createApi()),
     service: p(() => createService()),
@@ -22,7 +22,6 @@ const di = setup(
   },
 );
 
-di.bindAll();
 // binding: di.service
 // binding: di.api
 
