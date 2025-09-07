@@ -2,12 +2,12 @@
   "name": "@bulatlib/di-examples",
   "private": true,
   "scripts": {
-    "reinstall-di": "bun rm @bulatlib/di && bun pm cache rm && bun add ../pack/bulatlib-di-0.0.3.tgz",
+    "reinstall-di": "bun rm @bulatlib/di && bun pm cache rm && bun add ../pack/bulatlib-di-0.0.4.tgz",
     "basic": "bun run ./src/basic.ts",
     "mock": "bun run ./src/mock.ts"
   },
   "type": "module",
   "dependencies": {
-    "@bulatlib/di": "../pack/bulatlib-di-0.0.3.tgz"
+    "@bulatlib/di": "../pack/bulatlib-di-0.0.4.tgz"
   }
 }
