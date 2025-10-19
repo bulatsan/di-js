@@ -1,23 +1,19 @@
-## @bulatlib/di — tiny DI wrapper
-
-Small convenience layer on top of `inversify` to declare providers as a plain object. Call `bindAll()` once, then use `.get()` to access singletons.
+## @bulatlib/di — A simple dependency injection container
 
 ### Install
 
-`inversify` is a peer dependency. Supported versions: `>=5 <8`.
-
 ```bash
-npm i @bulatlib/di inversify
+npm i @bulatlib/di
 # or
-pnpm add @bulatlib/di inversify
+pnpm add @bulatlib/di
 # or
-bun add @bulatlib/di inversify
+bun add @bulatlib/di
 ```
 
 ### Quick start
 
 ```ts
-import { p, setup } from '@bulatlib/di';
+import { p, init } from '@bulatlib/di';
 
 const createApi = () => {
   return {
@@ -31,7 +27,7 @@ const createService = (api: { ping: () => string } = di.api.get()) => {
   };
 };
 
-const di = setup(
+const di = init(
   {
     api: p(() => createApi()),
     service: p(() => createService()),
@@ -41,7 +37,6 @@ const di = setup(
   },
 );
 
-di.bindAll();
 // binding: di.service
 // binding: di.api
 
@@ -54,7 +49,7 @@ console.log(di.service.get().run());
 You can rebind any provider before the first `.get()`:
 
 ```ts
-let di = setup({ api: p(() => new Api()) });
+let di = init({ api: p(() => new Api()) });
 di.api.bind(() => new MockApi());
 const api = di.api.get();
 ```
@@ -62,7 +57,7 @@ const api = di.api.get();
 ### API
 
 - `p(() => T)`: create a provider of `T`.
-- `setup(deps, { initialKey = 'di', onBind? })` → returns `deps` plus `bindAll()`.
+- `init(deps, { initialKey = 'di', onBind? })` → returns initialized `deps`.
 - `Provider.bind(builder?)`: bind with optional custom factory.
 - `Provider.get()`: get a singleton instance.
 
