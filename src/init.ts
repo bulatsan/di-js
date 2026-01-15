@@ -1,5 +1,4 @@
 import { Container } from './container';
-
 import { Provider } from './provider';
 
 interface Options {
@@ -10,10 +9,13 @@ interface Options {
 export function init<T extends object>(
   tree: T,
   { initialKey = 'di', onBind = () => {} }: Options = {},
-): T {
+): T & { pick: Pick } {
   const container = new Container();
 
-  const stack: Entry[] = [
+  const stack: {
+    key: string;
+    value: object;
+  }[] = [
     {
       key: initialKey,
       value: tree,
@@ -44,10 +46,23 @@ export function init<T extends object>(
     }
   }
 
-  return tree;
+  Object.assign(tree, { pick });
+
+  return tree as T & { pick: Pick };
 }
 
-interface Entry {
-  key: string;
-  value: object;
+type Pick = <T extends readonly { get: () => unknown }[]>(
+  ...deps: T
+) => {
+  -readonly [P in keyof T]: T[P] extends { get: () => infer R } ? R : never;
+};
+
+function pick<T extends readonly { get: () => unknown }[]>(
+  ...deps: T
+): {
+  -readonly [P in keyof T]: T[P] extends { get: () => infer R } ? R : never;
+} {
+  return deps.map((dep) => dep.get()) as {
+    -readonly [P in keyof T]: T[P] extends { get: () => infer R } ? R : never;
+  };
 }

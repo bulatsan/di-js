@@ -62,6 +62,5 @@ const api = di.api.get();
 - `Provider.get()`: get a singleton instance.
 
 Notes:
-
 - All providers are singletons by default.
 - No decorators or `reflect-metadata` are required.

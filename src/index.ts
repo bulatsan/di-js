@@ -1,2 +1,2 @@
-export * from './provider';
 export * from './init';
+export * from './provider';

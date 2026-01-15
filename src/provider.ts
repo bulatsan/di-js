@@ -1,4 +1,4 @@
-import { Container } from './container';
+import type { Container } from './container';
 
 export function p<T>(builder: () => T): Provider<T> {
   return new Provider(builder);
@@ -15,11 +15,7 @@ export class Provider<T> {
     this.builder = defaultBuilder;
   }
 
-  init(
-    name: string,
-    container: Container,
-    onBind: (name: string) => void,
-  ): void {
+  init(name: string, container: Container, onBind: (name: string) => void): void {
     this.name = name;
     this.container = container;
     this.onBind = onBind;

@@ -1,7 +1,6 @@
-import { expect, describe, it, vi } from 'vitest';
-
-import { p } from './provider';
+import { describe, expect, it, vi } from 'vitest';
 import { Container } from './container';
+import { p } from './provider';
 
 describe('Provider', () => {
   it('throws if used before init', () => {
